@@ -45,7 +45,7 @@ float yaw = 0;
 //Lights
 vec3 lightPos(0, -0.5, -0.7);
 vec3 lightColor = 14.f * vec3(1, 1, 1);
-vec3 indirectLight = 0.5f*vec3(1, 1, 1);
+vec3 indirectLight = 0.5f * vec3(1, 1, 1);
 
 int bounces = 1;
 float r = 2;
@@ -170,7 +170,8 @@ void Draw()
             if (closestIntersection)
             {
                 vec3 Dlight = DirectLight(closest);
-                PutPixelSDL(screen, x, y, Dlight);
+                vec3 color = triangles[closest.triangleIndex].color * ( Dlight + indirectLight );
+                PutPixelSDL(screen, x, y, color);
             }
             
             else {
@@ -275,7 +276,7 @@ vec3 DirectLight( const Intersection& i )
     //Then we let D do staffs to colors -> (lightColor * max)/area;
     
     float max = glm::max(glm::dot(r, n), 0.f);
-    vec3 D = triangles[i.triangleIndex].color * (lightColor * max)/area;
+    vec3 D = lightColor * max/area;
     
     Intersection intersection;
     int startIndex = i.triangleIndex;
