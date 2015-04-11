@@ -36,7 +36,8 @@ SDL_Surface* InitializeSDL( int width, int height, bool fullscreen )
 	}
 	atexit( SDL_Quit );
 
-	Uint32 flags = SDL_SWSURFACE;
+	//Uint32 flags = SDL_SWSURFACE;
+    Uint32 flags = SDL_HWSURFACE | SDL_DOUBLEBUF;
 	if( fullscreen )
 		flags |= SDL_FULLSCREEN;
 
