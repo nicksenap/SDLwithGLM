@@ -20,6 +20,11 @@ struct Pixel
     float zinv;
 };
 
+struct Vertex
+{
+    vec3 position;
+};
+
 // ----------------------------------------------------------------------------
 // GLOBAL VARIABLES
 
@@ -27,6 +32,7 @@ const int SCREEN_WIDTH = 500;
 const int SCREEN_HEIGHT = 500;
 SDL_Surface* screen;
 int t;
+Pixel f;
 vector<Triangle> triangles;
 
 vec3 cameraPos(0, 0, -3.001);
@@ -164,7 +170,7 @@ void Draw()
 
 void VertexShader(const vec3& v, Pixel& p)
 {
-    vec3 c = (cameraPos-v);//*R;
+    vec3 c = (cameraPos-v);
     p.x = focalLength*(c.x / c.z) + (SCREEN_WIDTH / 2);
     p.y = focalLength*(c.y / c.z) + (SCREEN_HEIGHT / 2);
     p.zinv = glm::length(c);
@@ -207,6 +213,19 @@ void DrawLineSDL(SDL_Surface* surface, Pixel a, Pixel b, vec3 color)
                 depthBuffer[line[i].x][line[i].y] = line[i].zinv;
             }
         }
+    }
+}
+
+
+void PixelShader( const Pixel& p )
+{
+    int x = p.x;
+    int y = p.y;
+    
+    if( p.zinv > depthBuffer[y][x] )
+    {
+        depthBuffer[y][x] = f.zinv;
+        PutPixelSDL( screen, x, y, currentColor );
     }
 }
 
@@ -361,12 +380,6 @@ void DrawPolygonRows(vector<Pixel>leftPixels, vector<Pixel>rightPixels){
 }
 
 
-void PixelShader( const Pixel& p )
-{
-    
-
-
-}
 
 ////-------------------------------LAB2-PART-II-----------------------------------------//
 //
